@@ -5,7 +5,9 @@ const seed = async () => {
     await db.sync({ force: true });
     await Users.create({
       name: "Keven",
+      username: "keven0311",
       email: "coco.keven@gmail.com",
+      isadmin: true,
     });
   } catch (err) {
     console.log(err);

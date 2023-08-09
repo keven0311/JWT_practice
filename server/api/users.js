@@ -12,4 +12,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.post("/", async (req, res, next) => {
+  try {
+    console.log("user post call!");
+    const { name, username, email, isadmin } = req.body;
+    const info = {
+      name: name,
+      username: username,
+      email: email,
+      isadmin: isadmin,
+    };
+    const newUser = await Users.create(info);
+    res.send(newUser);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

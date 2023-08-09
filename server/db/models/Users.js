@@ -6,9 +6,17 @@ const Users = db.define("users", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  username: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+  },
+  isadmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
   },
 });
 
