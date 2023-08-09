@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../database");
+const bcrypt = require("bcrypt");
 
 const Users = db.define("users", {
   name: {
@@ -7,6 +8,10 @@ const Users = db.define("users", {
     allowNull: false,
   },
   username: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -20,4 +25,16 @@ const Users = db.define("users", {
   },
 });
 
+Users.beforeCreate(async (user) => {
+  const SALT_ROUNDS = 12;
+  const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
+  user.password = hashedPassword;
+});
+
 module.exports = Users;
+
+Users.prototype.comparePassword = async function (plainTextPw) {
+  const isValid = await bcrypt.compare(plainTextPw, this.password);
+  console.log("valid password?", isValid);
+  return isValid;
+};

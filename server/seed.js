@@ -6,6 +6,7 @@ const seed = async () => {
     await Users.create({
       name: "Keven",
       username: "keven0311",
+      password: "123456",
       email: "coco.keven@gmail.com",
       isadmin: true,
     });

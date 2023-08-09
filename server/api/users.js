@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
 const { Users } = require("../db");
 
-router.get("/", async (req, res, next) => {
+const { authenticateToken } = require("./middleware/JwtToken");
+
+router.get("/", authenticateToken, async (req, res, next) => {
   try {
     const users = await Users.findAll();
     res.send(users);
@@ -12,13 +15,22 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:id", authenticateToken, async (req, res, next) => {
+  try {
+    const user = await Users.findOne({
+      where: { id: req.params.id },
+    });
+    res.send(user);
+  } catch (err) {}
+});
+
 router.post("/", async (req, res, next) => {
   try {
-    console.log("user post call!");
-    const { name, username, email, isadmin } = req.body;
+    const { name, username, password, email, isadmin } = req.body;
     const info = {
       name: name,
       username: username,
+      password: password,
       email: email,
       isadmin: isadmin,
     };
