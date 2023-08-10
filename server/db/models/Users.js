@@ -35,6 +35,6 @@ module.exports = Users;
 
 Users.prototype.comparePassword = async function (plainTextPw) {
   const isValid = await bcrypt.compare(plainTextPw, this.password);
-  console.log("valid password?", isValid);
+  // console.log("valid password?", isValid);
   return isValid;
 };

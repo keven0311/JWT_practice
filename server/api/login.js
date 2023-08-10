@@ -13,11 +13,16 @@ router.post("/", async (req, res, next) => {
       where: { username: username },
     });
 
+    const getToken = (user) => {
+      return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "10s" });
+    };
+
     if (user) {
       if (await user.comparePassword(password)) {
         const payload = { id: user.id, username: user.username };
-        const token = jwt.sign(payload, process.env.TOKEN_SECRET);
-        return res.send({ payload, token });
+        const token = getToken(payload);
+        const refreshToken = jwt.sign(payload, process.env.TOKEN_SECRET);
+        return res.send({ payload, token, refreshToken });
       } else {
         return res.status(401).send("Invalid Password");
       }

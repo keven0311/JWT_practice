@@ -6,7 +6,7 @@ const { Users } = require("../db");
 
 const { authenticateToken } = require("./middleware/JwtToken");
 
-router.get("/", authenticateToken, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const users = await Users.findAll();
     res.send(users);
@@ -15,13 +15,15 @@ router.get("/", authenticateToken, async (req, res, next) => {
   }
 });
 
-router.get("/:id", authenticateToken, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const user = await Users.findOne({
       where: { id: req.params.id },
     });
     res.send(user);
-  } catch (err) {}
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post("/", async (req, res, next) => {
