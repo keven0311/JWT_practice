@@ -1,6 +1,8 @@
+require("dotenv").config();
 const Sequelize = require("sequelize");
 const db = require("../database");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const Users = db.define("users", {
   name: {
@@ -31,10 +33,25 @@ Users.beforeCreate(async (user) => {
   user.password = hashedPassword;
 });
 
+Users.authenticate = async ({ username, password }) => {
+  const user = await Users.findOne({
+    where: { username },
+  });
+  if (!user || !(await user.comparePassword(password))) {
+    const error = Error("Incorrect username/password!");
+    error.status = 401;
+    throw error;
+  }
+  return user.generateToken();
+};
 module.exports = Users;
 
 Users.prototype.comparePassword = async function (plainTextPw) {
   const isValid = await bcrypt.compare(plainTextPw, this.password);
   // console.log("valid password?", isValid);
   return isValid;
+};
+
+Users.prototype.generateToken = () => {
+  return jwt.sign({ id: this.id }, process.env.TOKEN_SECRET);
 };

@@ -13,6 +13,9 @@ router.post("/", async (req, res, next) => {
       where: { username: username },
     });
 
+    // return res.send({
+    //   token: await Users.authenticate(req.body),
+    // });
     const getToken = (user) => {
       return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: "10s" });
     };
@@ -21,7 +24,11 @@ router.post("/", async (req, res, next) => {
       if (await user.comparePassword(password)) {
         const payload = { id: user.id, username: user.username };
         const token = getToken(payload);
-        const refreshToken = jwt.sign(payload, process.env.TOKEN_SECRET);
+        console.log("this is token from login post", token);
+        const refreshToken = jwt.sign(
+          payload,
+          process.env.REFRESH_TOKEN_SECRET
+        );
         return res.send({ payload, token, refreshToken });
       } else {
         return res.status(401).send("Invalid Password");

@@ -15,7 +15,7 @@ function Login() {
         password,
       });
       localStorage.setItem("token", data.token);
-      console.log();
+      console.log("FE login axios data : ", data);
       await getUserInfo(data.payload.id, data.token);
       setUsername("");
       setPassword("");
